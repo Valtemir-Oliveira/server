@@ -24,12 +24,14 @@ declare(strict_types=1);
 
 namespace OC\AppFramework\Middleware;
 
+use OC\AppFramework\OCS\BaseResponse;
 use OCP\AppFramework\Http\ICallbackResponse;
+use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Middleware;
 use OCP\IRequest;
 
-class GZipMiddleware extends Middleware {
+class CompressionMiddleware extends Middleware {
 
 	/** @var bool */
 	private $useGZip;
@@ -57,6 +59,19 @@ class GZipMiddleware extends Middleware {
 	public function afterController($controller, $methodName, Response $response) {
 		if ($response instanceof ICallbackResponse) {
 			$this->useGZip = false;
+		}
+
+		if (!$this->useGZip) {
+			return $response;
+		}
+
+		// Reset the state so we can check for the response types
+		$this->useGZip = false;
+		if ($response instanceof BaseResponse) {
+			$this->useGZip = true;
+		}
+		if ($response instanceof JSONResponse) {
+			$this->useGZip = true;
 		}
 
 		if ($this->useGZip) {

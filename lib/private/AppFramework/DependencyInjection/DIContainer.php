@@ -189,7 +189,7 @@ class DIContainer extends SimpleContainer implements IAppContainer {
 			$dispatcher = new MiddlewareDispatcher();
 
 			$dispatcher->registerMiddleware(
-				$c->query(OC\AppFramework\Middleware\GZipMiddleware::class)
+				$c->query(OC\AppFramework\Middleware\CompressionMiddleware::class)
 			);
 
 			$dispatcher->registerMiddleware(
